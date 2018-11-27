@@ -1,0 +1,22 @@
+Create a script in a language of your choice (though we prefer Python or JavaScript) that requires a single command line parameter: A web URL. The script should access feeds found at the given URL and display information (detailed below) about the feed entries. It breaks down as follows:
+
+Determine feeds to process.
+
+If the page at the given URL is itself a syndication feed, then process it in (2). Otherwise, if the page is an HTML page, then examine the HTML source at the URL for syndication feeds (ATOM or RSS). If none are found, simply display the message “No syndication feeds found.” and quit. Any feeds that are found should be processed as specified below.
+
+Process feeds.
+
+Display the URL of the feed
+
+For each entry (such as individual blog posts or news stories) in the feed display:
+
+Title
+
+URL
+
+Sentiment expressed in the entry’s text This should have the following format:
+
+positive indicators: [list of positive indicators]
+negative indicators: [list of negative indicators]
+overall sentiment: <“positive”|“negative”|“neutral”>
+You are free to make use of publicly available libraries. Please ensure though that you provide comprehensive instructions how to get the project set up and running.
