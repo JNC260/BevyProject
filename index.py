@@ -1,4 +1,6 @@
-import requests  
+import requests 
+import re
+from textblob import TextBlob
 from bs4 import BeautifulSoup  
 
 def parse_rss_feed(feed_url):
@@ -8,6 +10,26 @@ def parse_rss_feed(feed_url):
     for item in soup.find_all("item"):
         print(item.find('title').text)
         print(item.find('guid').text)
+        blob = str(item.find('description'))
+        description = TextBlob(blob)
+        if description.sentiment.polarity > 0.15:
+            print('This article is positive!')
+            assessments = description.sentiment_assessments.assessments
+            positives = []
+            negatives = []
+            for x in assessments:
+                word = x[0][0]
+                if x[1] > 0:
+                    positives.append(word)
+                if x[1] < 0: 
+                    negatives.append(word)
+            print('POSITIVES=', positives)
+            print('NEGATIVES=', negatives)
+        if(description.sentiment.polarity < -0.15):
+            print('This article is negative!')
+            print(list(description.sentiment_assessments))
+        if(description.sentiment.polarity <= 0.15 and description.sentiment.polarity >= -0.15):
+            print('This article is neutral.')
     for entry in soup.find_all("entry"):
         print(entry.find('title').text)
         link = entry.find('link', {"href": not None})
