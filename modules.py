@@ -3,7 +3,6 @@ import re
 from textblob import TextBlob
 from bs4 import BeautifulSoup 
 from textwrap import fill
-import sys
 
 # display message
 def print_message(title, url, positives, negatives, sentiment):
@@ -101,30 +100,33 @@ def get_rss_feed(website_url):
         atom = soup.find_all("link", {"type" : "application/atom+xml"})
         xhtml = soup.find_all("link", {"type" : "application/xhtml+xml"})
         atags = soup.find_all('a')
-        if rss != []:
-            for link in rss:
-                href = link.get('href')
-                if href.startswith('/'):
-                    href = website_url+str(href)
-                process_feed(href)
-        if atom != []:
-            for link in atom:
-                href = link.get('href')
-                if href.startswith('/'):
-                    href = website_url+str(href)
-                process_feed(href)
-        if xhtml != []:
-            for link in xhtml:
-                href = link.get('href')
-                if href.startswith('/'):
-                    href = website_url+str(href)
-                process_feed(href)
-        if atags != []:
-            for atags in atags:
-                site = atags.get('href')
-                if str(site).find('feed') != -1:
-                    if site.startswith('/'):
-                        site = website_url+str(site)
-                    process_feed(site)
-        if rss == [] and atom == [] and xhtml == []:
-            print('No feed found on this site. Try another!')
+        if soup.find('title').text == '403 Forbidden':
+            print('Sorry! Not authorized to check for feeds on this site.')
+        if soup.find('title').text != '403 Forbidden':
+            if rss != []:
+                for link in rss:
+                    href = link.get('href')
+                    if href.startswith('/'):
+                        href = website_url+str(href)
+                    process_feed(href)
+            if atom != []:
+                for link in atom:
+                    href = link.get('href')
+                    if href.startswith('/'):
+                        href = website_url+str(href)
+                    process_feed(href)
+            if xhtml != []:
+                for link in xhtml:
+                    href = link.get('href')
+                    if href.startswith('/'):
+                        href = website_url+str(href)
+                    process_feed(href)
+            if atags != []:
+                for atags in atags:
+                    site = atags.get('href')
+                    if str(site).find('feed') != -1:
+                        if site.startswith('/'):
+                            site = website_url+str(site)
+                        process_feed(site)
+            if rss == [] and atom == [] and xhtml == []:
+                print('No feed found on this site. Try another!')
