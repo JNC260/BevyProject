@@ -1,19 +1,23 @@
 import requests 
 import re
 from textblob import TextBlob
-from bs4 import BeautifulSoup  
+from bs4 import BeautifulSoup 
+from textwrap import fill
+import sys
 
 # display message
 def print_message(title, url, positives, negatives, sentiment):
-    message = '''\
----------------------------------------------------------------------------\n
-Title: {title}\n
-URL: {url}\n
-Positive Indicator Words:\n{positives}\n
-Negative Indicator Words:\n{negatives}\n
-The overall sentiment of this post is {sentiment}!\n
----------------------------------------------------------------------------    
-    '''.format(title=title, url=url, positives=positives, negatives=negatives, sentiment=sentiment)
+    line1=fill("---------------------------------------------------------------------------\n", width=75)
+    line2=fill("Title: {title}".format(title=title), width=75)
+    line3=fill("URL: {url}".format(url=url), width=75)
+    line4=fill("Positive Indicator Words:", width=75)
+    line5=fill("{positives}".format(positives=positives), width=75)
+    line6=fill("Negative Indicator Words:", width=75)
+    line7=fill("{negatives}".format(negatives=negatives), width=75)
+    line8=fill("The overall sentiment of this post is {sentiment}!".format(sentiment=sentiment), width=75)
+    line9=fill("---------------------------------------------------------------------------", width=75)
+    
+    message= line1+'\n\n'+line2+'\n\n'+line3+'\n\n'+line4+'\n'+line5+'\n\n'+line6+'\n'+line7+'\n\n'+line8+'\n\n'+line9
     print(message)
 
 # process description sentiment
@@ -36,9 +40,9 @@ def process_indicators(str):
     for x in assessments:
         word = x[0][0]
         if x[1] > 0:
-            positives.append(word)
+            positives.append(word.encode('utf8'))
         if x[1] < 0:
-            negatives.append(word)
+            negatives.append(word.encode('utf8'))
     return {'p': positives, 'n':negatives}
 
 # find rss feed link
