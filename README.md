@@ -1,6 +1,6 @@
 # Welcome to FindFeed!
 
-## Introduction
+## Features
 
 FindFeed determines if a url contains a syndication feed and processes that feed.
 
@@ -64,6 +64,6 @@ If FindFeed is unable to determine if a feed is present due to a '403 Forbidden'
 
 4. Run the following command with the url you'd like to test.
 
-`$ python findfeed.py <you url>`
+`$ python findfeed.py <your url>`
 
    * NOTE: All urls must begin with http:// or https://
