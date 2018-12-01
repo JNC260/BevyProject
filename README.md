@@ -6,15 +6,37 @@ FindFeed determines if a url contains a syndication feed and processes that feed
 
 If a feed is found, FindFeed will print out the title, url, and sentiment of each post in the feed along with the positive and negative indicators used to determine the sentiment.
 
-### Sample Response
+##### Sample Response
+```
+---------------------------------------------------------------------------
+Title: This drone is cleaning windows 1,100 feet above the ground, so
+humans don't have to
+
+URL: https://mashable.com/video/window-washing-drones-aerones-cleaning-
+turbines/
+
+Positive Indicator Words:
+
+['right', 'kind']
+
+Negative Indicator Words:
+['dangerous']
+
+The overall sentiment of this post is neutral!
+---------------------------------------------------------------------------
+```
 
 If a feed is not found, FindFeed will alert the user.
 
-### Sample Response
+##### Sample Response
+`No feed found on this site. Try another!`
+`'End'`
 
 If FindFeed is unable to determine if a feed is present due to a '403 Forbidden' error, FindFeed will alert the user.
 
-### Sample Response
+##### Sample Response
+`'Sorry! Not authorized to check for feeds on this site.'`
+`'End'`
 
 ## Requirements
 
