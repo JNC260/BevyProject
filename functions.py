@@ -1,5 +1,4 @@
 import requests 
-import re
 from textblob import TextBlob
 from bs4 import BeautifulSoup 
 from textwrap import fill
