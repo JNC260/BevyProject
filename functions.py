@@ -6,7 +6,7 @@ from textwrap import fill
 
 # display message
 def print_message(title, url, positives, negatives, sentiment):
-    line1=fill("---------------------------------------------------------------------------\n", width=75)
+    line1=fill("---------------------------------------------------------------------------", width=75)
     line2=fill("Title: {title}".format(title=title), width=75)
     line3=fill("URL: {url}".format(url=url), width=75)
     line4=fill("Positive Indicator Words:", width=75)
@@ -16,8 +16,11 @@ def print_message(title, url, positives, negatives, sentiment):
     line8=fill("The overall sentiment of this post is {sentiment}!".format(sentiment=sentiment), width=75)
     line9=fill("---------------------------------------------------------------------------", width=75)
     
-    message= line1+'\n\n'+line2+'\n\n'+line3+'\n\n'+line4+'\n'+line5+'\n\n'+line6+'\n'+line7+'\n\n'+line8+'\n\n'+line9
+    message = line1+'\n'+line2+'\n\n'+line3+'\n\n'+line4+'\n\n'+line5+'\n\n'+line6+'\n'+line7+'\n\n'+line8+'\n'+line9
+
     print(message)
+    return message
+    
 
 # process description sentiment
 def process_sentiment(str):
@@ -44,8 +47,6 @@ def process_indicators(str):
             negatives.append(word.encode('utf8'))
     return {'p': positives, 'n':negatives}
 
-# find rss feed link
-
 # process rss feed
 def process_feed(feed_url):
     # soupify
@@ -53,9 +54,13 @@ def process_feed(feed_url):
     plain = code.text
     soup = BeautifulSoup(plain, features='html.parser')
     posts = soup.find_all(['item', 'entry'])
+    result = ''' '''
+    count = 0
     # find title to print
     for x in posts:
+        count = count+1
         title = x.find_all('title')[0].text
+
     # find url to print  
         if x.find_all('link', {'href': not None}) != []:
             link = x.find_all('link', {'href': not None})
@@ -87,10 +92,12 @@ def process_feed(feed_url):
 
         print_message(title, url, positives, negatives, sentiment)
 
+    return 'End'
+
+# find rss feed link
 def get_rss_feed(website_url):
-    if website_url is None:
-        print("URL should not be null")
-    if website_url.endswith('/feed') or website_url.endswith('.rss') or website_url.endswith('.atom'):
+    #check if already a feed
+    if website_url.endswith('/feed') or website_url.endswith('.rss') or website_url.endswith('.atom') or website_url.startswith('http://feeds') or website_url.startswith('https://feeds'):
         process_feed(website_url)
     else:
         source_code = requests.get(website_url)
@@ -101,32 +108,33 @@ def get_rss_feed(website_url):
         xhtml = soup.find_all("link", {"type" : "application/xhtml+xml"})
         atags = soup.find_all('a')
         if soup.find('title').text == '403 Forbidden':
-            print('Sorry! Not authorized to check for feeds on this site.')
+            return 'Sorry! Not authorized to check for feeds on this site.'
         if soup.find('title').text != '403 Forbidden':
             if rss != []:
                 for link in rss:
                     href = link.get('href')
                     if href.startswith('/'):
                         href = website_url+str(href)
-                    process_feed(href)
+                    return process_feed(href)
             if atom != []:
                 for link in atom:
                     href = link.get('href')
                     if href.startswith('/'):
                         href = website_url+str(href)
-                    process_feed(href)
+                    return process_feed(href)
             if xhtml != []:
                 for link in xhtml:
                     href = link.get('href')
                     if href.startswith('/'):
                         href = website_url+str(href)
-                    process_feed(href)
+                    return process_feed(href)
             if atags != []:
                 for atags in atags:
                     site = atags.get('href')
                     if str(site).find('feed') != -1:
                         if site.startswith('/'):
                             site = website_url+str(site)
-                        process_feed(site)
+                        return process_feed(site)
             if rss == [] and atom == [] and xhtml == []:
                 print('No feed found on this site. Try another!')
+                return 'End'
